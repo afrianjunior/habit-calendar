@@ -8,7 +8,7 @@ export default function App () {
   return (
     <Router>
       <Layout>
-        <h1>Star Wars Planets</h1>
+        <h1>Calendar for make new Habit</h1>
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/detail" component={Detail} />
