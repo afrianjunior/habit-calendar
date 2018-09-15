@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 const Container = styled.div`
   width: 350px;
@@ -40,12 +40,34 @@ const Col = styled.div`
   text-align: center;
   padding: .3em 0;
   cursor: pointer;
+
+  &::after {
+    content: "";
+    display: table;
+    clear: both;
+    padding: .3em .5em;
+  }
+`
+
+const DateItem = styled.span`
+  border-radius: 4px;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  box-shadow: 0 10px 20px -5px rgba(37,45,51,0);
+  transition: all .3s ease;
+  ${props => props.active && css`
+    background-color: #a29bfe;
+    box-shadow: 0 10px 20px -5px rgba(37,45,51,.35);
+  `}
 `
 
 class CalendarUI extends Component {
   handleClickDay (e) {
-    const { clickCollect } = this.props
-    clickCollect(e)
+    this.props.clickCollect(e)
   }
 
   handleRenderDates () {
@@ -56,8 +78,8 @@ class CalendarUI extends Component {
           {weekInMonth.map((dayInWeek, keyDay) => {
             if (dayInWeek !== '') {
               return (
-                <Col onClick={this.handleClickDay.bind(this, dayInWeek)} key={keyDay}>
-                  {dayInWeek.day}
+                <Col onClick={this.handleClickDay.bind(this, dayInWeek.identity)} key={keyDay}>
+                  <DateItem active={dayInWeek.active}>{dayInWeek.day}</DateItem>
                 </Col>
               )
             } else {

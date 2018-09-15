@@ -12,24 +12,32 @@ class Calendar extends Component {
       'Fri',
       'Sat'
     ],
-    dates: []
+    dates: [],
+    collections: [
+      '20181109'
+    ]
   }
 
   componentDidMount () {
     this.calcDate(2018, 11)
   }
 
-  printDate (day, year, month, info) {
+  printDate (day, year, month) {
     let newDay = null
+    let isActive = false
     if (day.toString().length < 2) {
       newDay = `0${day}`
     } else {
       newDay = day
     }
+    const identity = `${year}${month}${newDay}`
+    this.state.collections.find(item => {
+      if (item === identity) isActive = true
+    })
     return {
       day: day,
-      identity: `${year}${month}${newDay}`,
-      info: info
+      identity: identity,
+      active: isActive
     }
   }
 
@@ -48,13 +56,13 @@ class Calendar extends Component {
         j = Number(j)
         if (i === 0) {
           if (j === startDay) {
-            calendar[i][j] = this.printDate(day++, year, month, '250k')
+            calendar[i][j] = this.printDate(day++, year, month)
             startDay++
           } else {
             calendar[i][j] = ''
           }
         } else if (day <= dayInMonth[month]) {
-          calendar[i][j] = this.printDate(day++, year, month, '250k')
+          calendar[i][j] = this.printDate(day++, year, month)
         } else {
           calendar[i][j] = ''
         }
@@ -70,15 +78,41 @@ class Calendar extends Component {
     }))
   }
 
-  handleClickCollect (data) {
-    console.log(data)
+  handleShowThumb (id, isActive) {
+    const { dates } = this.state
+    dates.map((week, weekIndex) => {
+      week.map((day, dayIndex) => {
+        if (day.identity === id) {
+          dates[weekIndex][dayIndex].active = isActive
+          this.setState(({ dates }) => ({
+            dates: dates
+          }))
+        }
+      })
+    })
+  }
+
+  handleClickCollect (identity) {
+    const { collections } = this.state
+    const isDuplicate = collections.find(collectItem => collectItem === identity)
+    if (isDuplicate) {
+      this.setState(({ collections }) => ({
+        collections: collections.filter(collect => collect !== identity)
+      }))
+      this.handleShowThumb(identity, false)
+    } else {
+      this.setState(({ collections }) => ({
+        collections: collections.concat(identity)
+      }))
+      this.handleShowThumb(identity, true)
+    }
   }
 
   render () {
     const { dates } = this.state
     return (
       <React.Fragment>
-        <CalendarUI dates={dates} clickCollect={this.handleClickCollect} />
+        <CalendarUI dates={dates} clickCollect={this.handleClickCollect.bind(this)} />
       </React.Fragment>
     )
   }
