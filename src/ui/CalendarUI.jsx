@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
@@ -39,19 +39,24 @@ const Col = styled.div`
   float: left;
   text-align: center;
   padding: .3em 0;
+  cursor: pointer;
 `
 
-class CalendarUI extends React.Component {
+class CalendarUI extends Component {
+  handleClickDay (e) {
+    const { clickCollect } = this.props
+    clickCollect(e)
+  }
+
   handleRenderDates () {
     const { dates } = this.props
-    console.log(dates)
     return (
       dates.map((weekInMonth, key) => (
         <Row key={key}>
           {weekInMonth.map((dayInWeek, keyDay) => {
             if (dayInWeek !== '') {
               return (
-                <Col key={keyDay}>
+                <Col onClick={this.handleClickDay.bind(this, dayInWeek)} key={keyDay}>
                   {dayInWeek.day}
                 </Col>
               )
@@ -79,7 +84,8 @@ class CalendarUI extends React.Component {
 }
 
 CalendarUI.propTypes = {
-  dates: PropTypes.array
+  dates: PropTypes.array,
+  clickCollect: PropTypes.func
 }
 
 export default CalendarUI

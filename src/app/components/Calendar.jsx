@@ -16,7 +16,7 @@ class Calendar extends Component {
   }
 
   componentDidMount () {
-    this.calcDate(2018, 10)
+    this.calcDate(2018, 11)
   }
 
   printDate (day, year, month, info) {
@@ -45,6 +45,7 @@ class Calendar extends Component {
     while (haveDay) {
       calendar[i] = []
       for (let j in [...Array(7).keys()]) {
+        j = Number(j)
         if (i === 0) {
           if (j === startDay) {
             calendar[i][j] = this.printDate(day++, year, month, '250k')
@@ -56,7 +57,6 @@ class Calendar extends Component {
           calendar[i][j] = this.printDate(day++, year, month, '250k')
         } else {
           calendar[i][j] = ''
-          // haveDay = false
         }
         if (day > dayInMonth[month]) {
           haveDay = false
@@ -70,22 +70,15 @@ class Calendar extends Component {
     }))
   }
 
+  handleClickCollect (data) {
+    console.log(data)
+  }
+
   render () {
     const { dates } = this.state
-    let printDate = []
-    dates.map(item => {
-      printDate = printDate.concat(item)
-    })
     return (
       <React.Fragment>
-        <CalendarUI dates={this.state.dates} />
-        {/* <p>
-          {printDate.map((item, index) => {
-            if (item !== '') {
-              return <div>{item.identity}</div>
-            }
-          })}
-        </p> */}
+        <CalendarUI dates={dates} clickCollect={this.handleClickCollect} />
       </React.Fragment>
     )
   }
