@@ -51,8 +51,8 @@ const Col = styled.div`
 
 const DateItem = styled.span`
   border-radius: 4px;
-  width: 22px;
-  height: 22px;
+  width: 30px;
+  height: 30px;
   display: inline-flex;
   justify-content: center;
   align-items: center;
