@@ -91,6 +91,9 @@ const DateItem = styled.span`
     background-color: #a29bfe;
     box-shadow: 0 10px 20px -5px rgba(37,45,51,.35);
   `}
+  ${props => props.today && css`
+    border-bottom: 2px solid #fdcb6e;
+  `}
 `
 
 class CalendarUI extends Component {
@@ -124,7 +127,7 @@ class CalendarUI extends Component {
             if (dayInWeek !== '') {
               return (
                 <Col onClick={this.handleClickDay.bind(this, dayInWeek.identity, dayInWeek.active)} key={keyDay}>
-                  <DateItem active={dayInWeek.active}>{dayInWeek.day}</DateItem>
+                  <DateItem active={dayInWeek.active} today={dayInWeek.isToday}>{dayInWeek.day}</DateItem>
                 </Col>
               )
             } else {
