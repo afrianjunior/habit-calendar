@@ -19,29 +19,44 @@ class Calendar extends Component {
   }
 
   componentDidMount () {
-    this.calcDate(2018, 11)
+    this.calcDate(2018, 8)
   }
 
-  printDate (day, year, month) {
-    let newDay = null
+  getToday () {
+    const date = new Date()
+    let month = date.getUTCMonth()
+    let day = date.getUTCDate()
+    let year = date.getUTCFullYear()
+
+    if (day.toString().length === 1) day = `0${day}`
+    if (month.toString().length === 1) month = `0${month}`
+
+    return `${year}${month}${day}`
+  }
+
+  printDate (...args) {
+    let [day, year, month, today] = args
     let isActive = false
-    if (day.toString().length < 2) {
-      newDay = `0${day}`
-    } else {
-      newDay = day
-    }
-    const identity = `${year}${month}${newDay}`
+    let isToday = false
+
+    if (day.toString().length < 2) day = `0${day}`
+    if (month.toString().length < 2) month = `0${month}`
+
+    const identity = `${year}${month}${day}`
     this.state.collections.find(item => {
       if (item === identity) isActive = true
     })
+    if (today === identity) isToday = true
     return {
       day: day,
       identity: identity,
-      active: isActive
+      active: isActive,
+      isToday: isToday
     }
   }
 
   calcDate (year, month) {
+    const today = this.getToday()
     let day = 1
     let i
     let haveDay = true
@@ -56,13 +71,13 @@ class Calendar extends Component {
         j = Number(j)
         if (i === 0) {
           if (j === startDay) {
-            calendar[i][j] = this.printDate(day++, year, month)
+            calendar[i][j] = this.printDate(day++, year, month, today)
             startDay++
           } else {
             calendar[i][j] = ''
           }
         } else if (day <= dayInMonth[month]) {
-          calendar[i][j] = this.printDate(day++, year, month)
+          calendar[i][j] = this.printDate(day++, year, month, today)
         } else {
           calendar[i][j] = ''
         }
