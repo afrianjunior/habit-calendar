@@ -1,17 +1,44 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import styled, { css } from 'styled-components'
+import styled, { css, keyframes } from 'styled-components'
+
+const TadaAnimate = keyframes`
+  0% {
+      -webkit-transform: scale(1);
+      transform: scale(1);
+  }
+  10%, 20% {
+      -webkit-transform: scale(0.9) rotate(-3deg);
+      transform: scale(0.9) rotate(-3deg);
+  }
+  30%, 50%, 70%, 90% {
+      -webkit-transform: scale(1.1) rotate(3deg);
+      transform: scale(1.1) rotate(3deg);
+  }
+  40%, 60%, 80% {
+      -webkit-transform: scale(1.1) rotate(-3deg);
+      transform: scale(1.1) rotate(-3deg);
+  }
+  100% {
+      -webkit-transform: scale(1) rotate(0);
+      transform: scale(1) rotate(0);
+  }
+`
 
 const Container = styled.div`
   width: 350px;
   border-radius: 6px;
   padding: 1em .5em 2em .5em;
   margin: 0 auto;
-  background-image: url('https://lstore.graphics/meshgradients/images/14.-Prim.jpg');
+  background-color: #fd79a8;
+  /* background-image: url('https://lstore.graphics/meshgradients/images/14.-Prim.jpg');
   background-repeat: no-repeat;
   background-size: cover;
-  background-position: center center;
+  background-position: center center; */
   text-align: center;
+  ${props => props.active && css`
+    animation: ${TadaAnimate} .5s infinite;
+  `}
 `
 
 const Head = styled.div`
@@ -25,6 +52,7 @@ const Body = styled.div`
   font-size: 13px;
   color: #fff;
 `
+
 const Row = styled.div`
   &::after {
     content: "";
@@ -58,7 +86,7 @@ const DateItem = styled.span`
   align-items: center;
   background-color: transparent;
   box-shadow: 0 10px 20px -5px rgba(37,45,51,0);
-  transition: all .3s ease;
+  transition: all .1s ease;
   ${props => props.active && css`
     background-color: #a29bfe;
     box-shadow: 0 10px 20px -5px rgba(37,45,51,.35);
@@ -66,8 +94,25 @@ const DateItem = styled.span`
 `
 
 class CalendarUI extends Component {
-  handleClickDay (e) {
-    this.props.clickCollect(e)
+  state = {
+    tada: false
+  }
+
+  handleTada () {
+    this.setState(({ tada }) => ({
+      tada: true
+    }))
+
+    setTimeout(() => {
+      this.setState(({ tada }) => ({
+        tada: false
+      }))
+    }, 500)
+  }
+
+  handleClickDay (identity, active) {
+    if (!active) this.handleTada()
+    this.props.clickCollect(identity)
   }
 
   handleRenderDates () {
@@ -78,7 +123,7 @@ class CalendarUI extends Component {
           {weekInMonth.map((dayInWeek, keyDay) => {
             if (dayInWeek !== '') {
               return (
-                <Col onClick={this.handleClickDay.bind(this, dayInWeek.identity)} key={keyDay}>
+                <Col onClick={this.handleClickDay.bind(this, dayInWeek.identity, dayInWeek.active)} key={keyDay}>
                   <DateItem active={dayInWeek.active}>{dayInWeek.day}</DateItem>
                 </Col>
               )
@@ -94,7 +139,7 @@ class CalendarUI extends Component {
   render () {
     return (
       <React.Fragment>
-        <Container>
+        <Container active={this.state.tada}>
           <Head>Calendar</Head>
           <Body>
             {this.handleRenderDates()}
